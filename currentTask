@@ -1,0 +1,115 @@
+let a = {a: 1, b: 2, c: 3};
+a.keys(); // [a, b, c]
+a.values(); // [1, 2, 3]
+a.entries(); // [[a, 1], [b, 2], [c, 3]]
+
+
+[10:59:08] Shalimov Igor: Libra = {
+    assign
+    inherits
+    traverse
+    proxyProperty // задание со звёздочкой
+}
+    [10:59:26] Shalimov Igor:
+    Libra.assign(…)
+
+[10:59:29] Shalimov Igor: ну ты понял
+    [10:59:34] Shalimov Igor: счас описание
+    [10:59:43] Shalimov Igor: inherits понятно?
+    [10:59:52] Антон Старовойтов: наследование
+    [10:59:53] Антон Старовойтов: да
+    [11:01:50] Shalimov Igor: Написать функцию assign
+
+Example
+
+let obj1 = {a: 1, b: 2};
+let obj2 = {c: 3, d: 4};
+
+let objResult1 = assign({/ destination object /}, obj1, obj2);
+let objResult2 = assign({}, obj1, obj2, {o: 30}, {i: 1});
+
+console.log(objResult1) // { a: 1, b: 2, c: 3, d: 4}
+console.log(objResult2) // { a: 1, b: 2, c: 3, d: 4, o: 30, i: 1 }
+
+method signature:
+    assign(destination, ...sources)
+
+[11:02:14] Shalimov Igor:
+    Реализовать функцию inherits база (Prototypes)
+Повторить оператор instanceof
+
+[11:05:50] Shalimov Igor: сорри
+    [11:05:54] Shalimov Igor: не Libra.create
+    [11:06:00] Shalimov Igor: а Libra.createConstructor
+    [11:10:55] Shalimov Igor: охуенная задача
+    [11:10:56] Shalimov Igor: есть
+    [11:11:05] Shalimov Igor: но мы к ней подойдем и вместе решим
+    [11:11:08] Shalimov Igor: пока напишу другие
+    [11:11:35] Антон Старовойтов: я тебя не перебиваю, но внимательно читаю
+    [11:12:10] Shalimov Igor:
+    traverse - обход по примитивным свойствам объекта
+
+Libra.traverse(obj, callback)
+callback(val, key)
+
+
+    [11:12:48] Shalimov Igor:
+    Libra.inherits(ChildCtor, ParentCtor)
+
+        [11:13:38 | Изменены 11:15:11] Shalimov Igor:
+    Example of getValue/setValue
+
+getValue
+setValue
+
+let obj = {
+    a: { d: { c: 1} }
+    b: 3
+    o: { p: 1 }
+}
+
+Libra.setValue(obj, ‘a.d.c’, 3) // obj.a.d.c -> 3
+Libra.getValue(obj, ‘o.p’); // 1
+
+
+
+
+
+function createConstructor(name, descriptor) {
+
+  const each = (obj, callback) => Object.keys(obj).forEach(key => callback(obj[key], key, obj));
+  const map = (obj, callback) => Object.keys(obj).map(key => callback(obj[key], key, obj));
+
+  let fieldsDescription = map(descriptor.fields,
+    (value, key) => `this.${key} = ${JSON.stringify(value)};`
+  ).join('\n\r');
+
+  let ctorCreater = new Function(`return function ${name} () {
+    ${fieldsDescription}
+  }`);
+
+  let ctor = ctorCreater();
+
+  each(descriptor.staticMethods,
+    (method, key) => ctor[key] = method
+  );
+
+  each(descriptor.methods,
+    (method, key) => ctor.prototype[key] = method
+  );
+
+  return ctor;
+}
+
+var CreatedConstructor = createConstructor(name, {
+  fields: {
+    name: 'John',
+    surname: 'Doe'
+  },
+  staticMethods: {
+    elseif: function () { return 'cool'; }
+  },
+  methods: {
+    do: function () {}
+  }
+});

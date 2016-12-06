@@ -131,24 +131,91 @@
 
 
 (function(module) {
-        'use strict'
-        module.myKeys = function() {
-            let hasOwnProperty = Object.prototype.hasOwnProperty;
-            let result = [],
-                prop;
-            for (prop in this) {
-                if (hasOwnProperty.call(this, prop)) {
+    'use strict'
+
+    function paramCheckDecorator(fn) {
+        return function(obj) {
+            if (obj !== undefined && typeof obj !== 'object' && (typeof obj !== 'function' || obj === null)) {
+                throw new TypeError('Object.keys called on non-object');
+            }
+
+            return fn.apply(this, arguments);
+        }
+    }
+
+    module.myKeys = paramCheckDecorator(function(obj) {
+        let hasOwnProperty = Object.prototype.hasOwnProperty;
+        let result = [],
+            prop;
+        if (obj !== undefined) {
+            for (prop in obj) {
+                if (hasOwnProperty.call(obj, prop)) {
                     result.push(prop);
                 }
             }
             return result;
-        });
+        }
+        for (prop in this) {
+            if (hasOwnProperty.call(this, prop)) {
+                result.push(prop);
+            }
+        }
+        return result;
+    });
+
+    module.myValues = paramCheckDecorator(function(obj) {
+        let hasOwnProperty = Object.prototype.hasOwnProperty;
+        let result = [],
+            prop;
+        if (obj !== undefined) {
+            for (prop in obj) {
+                if (hasOwnProperty.call(obj, prop)) {
+                    result.push(obj[prop]);
+                }
+            }
+            return result;
+        }
+        for (prop in this) {
+            if (hasOwnProperty.call(this, prop)) {
+                result.push(this[prop]);
+            }
+        }
+        return result;
+    });
+
+    module.myEntries = paramCheckDecorator(function(obj) {
+        let hasOwnProperty = Object.prototype.hasOwnProperty;
+        let result = [],
+            prop;
+        if (obj !== undefined) {
+            for (prop in obj) {
+                let tmp = [];
+                if (hasOwnProperty.call(obj, prop)) {
+                    tmp.push(prop);
+                    tmp.push(obj[prop]);
+                    result.push(tmp);
+                }
+            }
+            return result;
+        }
+        for (prop in this) {
+            if (hasOwnProperty.call(this, prop)) {
+                let tmp = [];
+                if (hasOwnProperty.call(obj, prop)) {
+                    tmp.push(prop);
+                    tmp.push(obj[prop]);
+                    result.push(tmp);
+                }
+            }
+        }
+        return result;
+    });
+
 })(Object.prototype);
 
 
-
-
 let arr = [1, 2, 3, 4, 5, 6, 7, 2, 3, 4, 5, 6, 7, 2]
+
 let result = arr.while(function(elem, index, array) {
     return elem < 5;
 });
@@ -165,8 +232,6 @@ let obj = massiveAttack.toObject(function(elem, index, array) {
         value: elem
     };
 });
-
-
 
 let accum = arr.fold(function(previousValue, currentValue) {
     return previousValue + currentValue;
@@ -202,5 +267,6 @@ console.log("findIndexLast: " + arr.myFindIndexLast(function(elem, index, array)
     return elem < 5;
 }));
 
-console.log(obj.myKeys());
-);
+console.log(Object.myKeys(obj));
+console.log(obj.myValues());
+console.log(Object.myEntries(obj));
