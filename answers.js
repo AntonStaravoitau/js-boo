@@ -1,4 +1,5 @@
 (function(module) {
+    'use strict'
     module.first = function() {
         return this[0];
     };
@@ -19,7 +20,6 @@
         return function(param) {
             if (typeof param !== type) {
                 throw new Error('Predicate should be a function');
-                return this;
             }
 
             return fn.apply(this, arguments);
@@ -41,8 +41,8 @@
     });
 
     module.filter = paramCheckDecorator('function', function(predicate) {
-
         let newArray = [];
+
         for (let i = 0; i < this.length; i++) {
             if (predicate(this[i], i, this)) {
                 newArray.push(this[i]);
@@ -52,7 +52,6 @@
     });
 
     module.toObject = paramCheckDecorator('function', function(predicate) {
-
         let newObject = {};
 
         for (let i = 0; i < this.length; i++) {
@@ -63,12 +62,9 @@
     });
 
     module.fold = paramCheckDecorator('function', function(predicate, initialValue) {
-        if (typeof predicate !== "function") {
-            throw new Error('Predicate should be a function');
-            return this;
-        }
         let previousValue;
         previousValue = this[0] + initialValue;
+
         for (let i = 1; i < this.length; i++) {
             previousValue = predicate(previousValue, this[i], i, this);
         }
@@ -76,8 +72,8 @@
     });
 
     module.transform = paramCheckDecorator('function', function(predicate) {
-
         let newArray = [];
+
         for (let i = 0; i < this.length; i++) {
             newArray.push(predicate(this[i], i, this));
         }
@@ -92,25 +88,23 @@
     });
 
     module.myFind = paramCheckDecorator('function', function(predicate) {
-
         for (let i = 0; i < this.length; i++) {
             if (predicate(this[i], i, this) === true) {
                 return this[i];
             }
         }
 
-        return udefined;
+        return undefined;
     });
 
     module.myFindLast = paramCheckDecorator('function', function(predicate) {
-
         for (let i = this.length - 1; i >= 0; i--) {
             if (predicate(this[i], i, this) === true) {
                 return this[i];
             }
         }
 
-        return udefined;
+        return undefined;
     });
 
     module.myFindIndex = paramCheckDecorator('function', function(predicate) {
@@ -137,27 +131,18 @@
 
 
 (function(module) {
-    function paramCheckDecorator(fn) {
-        return function() {
-            /*   if (typeof this !== 'object' && (typeof obj !== 'function' || obj === null)) {
-                   throw new TypeError('Object.keys called on non-object');
-                   return this;
-               }*/
-            return fn.apply(this, arguments);
-        };
-    }
-
-    module.myKeys = paramCheckDecorator(function() {
-        let hasOwnProperty = Object.prototype.hasOwnProperty;
-        let result = [],
-            prop;
-        for (prop in this) {
-            if (hasOwnProperty.call(this, prop)) {
-                result.push(prop);
+        'use strict'
+        module.myKeys = function() {
+            let hasOwnProperty = Object.prototype.hasOwnProperty;
+            let result = [],
+                prop;
+            for (prop in this) {
+                if (hasOwnProperty.call(this, prop)) {
+                    result.push(prop);
+                }
             }
-        }
-        return result;
-    });
+            return result;
+        });
 })(Object.prototype);
 
 
@@ -218,3 +203,4 @@ console.log("findIndexLast: " + arr.myFindIndexLast(function(elem, index, array)
 }));
 
 console.log(obj.myKeys());
+);
