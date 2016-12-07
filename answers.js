@@ -132,6 +132,52 @@
 
 (function(module) {
     'use strict'
+    module.myKeys = function() {
+        let hasOwnProperty = Object.prototype.hasOwnProperty;
+        let result = [],
+            prop;
+        for (prop in this) {
+            if (hasOwnProperty.call(this, prop)) {
+                result.push(prop);
+            }
+        }
+        return result;
+    };
+
+    module.myValues = function() {
+        let hasOwnProperty = Object.prototype.hasOwnProperty;
+        let result = [],
+            prop;
+        for (prop in this) {
+            if (hasOwnProperty.call(this, prop)) {
+                result.push(this[prop]);
+            }
+        }
+        return result;
+    };
+
+    module.myEntries = function() {
+        let hasOwnProperty = Object.prototype.hasOwnProperty;
+        let result = [],
+            prop;
+        for (prop in this) {
+            if (hasOwnProperty.call(this, prop)) {
+                let tmp = [];
+                if (hasOwnProperty.call(obj, prop)) {
+                    tmp.push(prop);
+                    tmp.push(obj[prop]);
+                    result.push(tmp);
+                }
+            }
+        }
+        return result;
+    };
+
+})(Object.prototype);
+
+
+(function(module) {
+    'use strict'
 
     function paramCheckDecorator(fn) {
         return function(obj) {
@@ -155,12 +201,6 @@
             }
             return result;
         }
-        for (prop in this) {
-            if (hasOwnProperty.call(this, prop)) {
-                result.push(prop);
-            }
-        }
-        return result;
     });
 
     module.myValues = paramCheckDecorator(function(obj) {
@@ -175,12 +215,6 @@
             }
             return result;
         }
-        for (prop in this) {
-            if (hasOwnProperty.call(this, prop)) {
-                result.push(this[prop]);
-            }
-        }
-        return result;
     });
 
     module.myEntries = paramCheckDecorator(function(obj) {
@@ -198,24 +232,15 @@
             }
             return result;
         }
-        for (prop in this) {
-            if (hasOwnProperty.call(this, prop)) {
-                let tmp = [];
-                if (hasOwnProperty.call(obj, prop)) {
-                    tmp.push(prop);
-                    tmp.push(obj[prop]);
-                    result.push(tmp);
-                }
-            }
-        }
         return result;
     });
 
-})(Object.prototype);
+
+})(Object);
+
 
 
 let arr = [1, 2, 3, 4, 5, 6, 7, 2, 3, 4, 5, 6, 7, 2]
-
 let result = arr.while(function(elem, index, array) {
     return elem < 5;
 });
@@ -232,6 +257,8 @@ let obj = massiveAttack.toObject(function(elem, index, array) {
         value: elem
     };
 });
+
+
 
 let accum = arr.fold(function(previousValue, currentValue) {
     return previousValue + currentValue;
