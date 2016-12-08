@@ -87,7 +87,7 @@
         return this;
     });
 
-    module.myFind = paramCheckDecorator('function', function(predicate) {
+    module.find = paramCheckDecorator('function', function(predicate) {
         for (let i = 0; i < this.length; i++) {
             if (predicate(this[i], i, this) === true) {
                 return this[i];
@@ -97,7 +97,7 @@
         return undefined;
     });
 
-    module.myFindLast = paramCheckDecorator('function', function(predicate) {
+    module.findLast = paramCheckDecorator('function', function(predicate) {
         for (let i = this.length - 1; i >= 0; i--) {
             if (predicate(this[i], i, this) === true) {
                 return this[i];
@@ -107,7 +107,7 @@
         return undefined;
     });
 
-    module.myFindIndex = paramCheckDecorator('function', function(predicate) {
+    module.findIndex = paramCheckDecorator('function', function(predicate) {
         for (let i = 0; i < this.length; i++) {
             if (predicate(this[i], i, this) === true) {
                 return i;
@@ -117,7 +117,7 @@
         return -1;
     });
 
-    module.myFindIndexLast = paramCheckDecorator('function', function(predicate) {
+    module.findIndexLast = paramCheckDecorator('function', function(predicate) {
         for (let i = this.length - 1; i >= 0; i--) {
             if (predicate(this[i], i, this) === true) {
                 return i;
@@ -132,7 +132,7 @@
 
 (function(module) {
     'use strict'
-    module.myKeys = function() {
+    module.keys = function() {
         let hasOwnProperty = Object.prototype.hasOwnProperty;
         let result = [],
             prop;
@@ -144,7 +144,7 @@
         return result;
     };
 
-    module.myValues = function() {
+    module.values = function() {
         let hasOwnProperty = Object.prototype.hasOwnProperty;
         let result = [],
             prop;
@@ -156,7 +156,7 @@
         return result;
     };
 
-    module.myEntries = function() {
+    module.entries = function() {
         let hasOwnProperty = Object.prototype.hasOwnProperty;
         let result = [],
             prop;
@@ -189,7 +189,7 @@
         }
     }
 
-    module.myKeys = paramCheckDecorator(function(obj) {
+    module.keys = paramCheckDecorator(function(obj) {
         let hasOwnProperty = Object.prototype.hasOwnProperty;
         let result = [],
             prop;
@@ -203,7 +203,7 @@
         }
     });
 
-    module.myValues = paramCheckDecorator(function(obj) {
+    module.values = paramCheckDecorator(function(obj) {
         let hasOwnProperty = Object.prototype.hasOwnProperty;
         let result = [],
             prop;
@@ -217,17 +217,14 @@
         }
     });
 
-    module.myEntries = paramCheckDecorator(function(obj) {
+    module.entries = paramCheckDecorator(function(obj) {
         let hasOwnProperty = Object.prototype.hasOwnProperty;
         let result = [],
             prop;
         if (obj !== undefined) {
             for (prop in obj) {
-                let tmp = [];
                 if (hasOwnProperty.call(obj, prop)) {
-                    tmp.push(prop);
-                    tmp.push(obj[prop]);
-                    result.push(tmp);
+                    result.push([prop, obj[prop]])
                 }
             }
             return result;
@@ -281,19 +278,19 @@ console.log("fold: " + accum);
 console.log("transform: " + roots);
 console.log("each :");
 numbers.each(logArrayElements);
-console.log("find " + arr.myFind(function(elem, index, array) {
+console.log("find " + arr.find(function(elem, index, array) {
     return elem < 5;
 }));
-console.log("findLast " + arr.myFindLast(function(elem, index, array) {
+console.log("findLast " + arr.findLast(function(elem, index, array) {
     return elem < 5;
 }));
-console.log("findIndex: " + arr.myFindIndex(function(elem, index, array) {
+console.log("findIndex: " + arr.findIndex(function(elem, index, array) {
     return elem < 5;
 }));
-console.log("findIndexLast: " + arr.myFindIndexLast(function(elem, index, array) {
+console.log("findIndexLast: " + arr.findIndexLast(function(elem, index, array) {
     return elem < 5;
 }));
 
-console.log(Object.myKeys(obj));
-console.log(obj.myValues());
-console.log(Object.myEntries(obj));
+console.log(Object.keys(obj));
+console.log(obj.values());
+console.log(Object.entries(obj));
