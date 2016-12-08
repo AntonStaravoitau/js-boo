@@ -181,8 +181,8 @@
 
     function paramCheckDecorator(fn) {
         return function(obj) {
-            if (obj !== undefined && typeof obj !== 'object' && (typeof obj !== 'function' || obj === null)) {
-                throw new TypeError('Object.keys called on non-object');
+            if (obj === undefined || typeof obj !== 'object' && (typeof obj !== 'function' || obj === null)) {
+                throw new TypeError('argument is not object');
             }
 
             return fn.apply(this, arguments);
@@ -293,4 +293,5 @@ console.log("findIndexLast: " + arr.findIndexLast(function(elem, index, array) {
 
 console.log(Object.keys(obj));
 console.log(obj.values());
+
 console.log(Object.entries(obj));
