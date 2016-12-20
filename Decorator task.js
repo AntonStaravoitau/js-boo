@@ -1,16 +1,12 @@
-/**
- * Created by anton on 19.12.2016.
- */
 function argsChecker(func, parametrsArray) {
     return function() {
-        if (arguments.length != parametrsArray.length) {
+        if (arguments.length !== parametrsArray.length) {
             throw new Error("Wrong count of arguments");
-        } else {
-            for (let i = 0; i < parametrsArray.length; i++) {
-                if ((arguments[i]).constructor !== parametrsArray[i]) {
-                    //if(arguments[i].__proto__ !== parametrsArray[i].prototype){
-                    throw new Error("Wrong type of " + (i + 1) + " arguments");
-                }
+        }
+        for (let i = 0; i < parametrsArray.length; i++) {
+            if ((arguments[i]).constructor !== parametrsArray[i]) {
+                //if(arguments[i].__proto__ !== parametrsArray[i].prototype){
+                throw new Error("Wrong type of " + (i + 1) + " arguments");
             }
         }
         return func.apply(this, arguments);
