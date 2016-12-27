@@ -1,0 +1,147 @@
+/*
+Factory
+Decorator (rehearsal)
+Strategy (easy)
+Observer
+
+Fasade
+чё скажешь
+можно ещё и Mediator но не успеем
+*/
+
+// DECORATOR
+function decorSmth(func) {
+
+  return function(...args) {
+    if(args.length !== 3){
+      throw new Error("Wrong");
+    }
+
+    return func.call(this, ...args);
+  }
+}
+// ----------- Strategy --------------
+class ImageProcessing {
+  constructor() {
+    this.strategy = null;
+  }
+
+  setStrategy(strategy) {
+    this.strategy = strategy;
+  }
+
+  preProcessing() {
+
+  }
+
+  postProcessing() {
+
+  }
+
+  execute(...args) {
+    this.preProcessing();
+    this.strategy.process(...args);
+    this.postProcessing();
+  }
+}
+
+// ----------- Factory Method ---------------
+
+class ImageBMPStrategy {
+  process() {
+    // ...
+  }
+}
+
+class ImageJPGStrategy {
+  process() {
+    // ...
+  }
+}
+
+class VFactory {
+  static create(type) {
+    type = type || type.toLowerCase();
+
+    switch (type) {
+      case 'jpg':
+        return new ImageJPGStrategy();
+      case 'bmp':
+        return new ImageBMPStrategy();
+    }
+  }
+}
+
+function oops(imageFormat, path) {
+  let processorStrategy = VFactory.create(imageFormat);
+  let imageProcessor = new ImageProcessing();
+
+  imageProcessor.setStrategy(processorStrategy);
+  imageProcessor.execute(path);
+}
+
+// ----------- Observer ---------------
+
+class ObserverList {
+  constructor() {
+    this.list = []
+  }
+
+  add(observer) {
+    this.list.push(observer);
+  }
+
+  remove(observer) {
+    const obsIndex = this.list.indexOf(observer);
+
+    if(obsIndex !== -1) {
+      this.list.splice(obsIndex, 1);
+    }
+  }
+
+  update(...args) {
+    this.list.forEach((observer) => {
+      observer.onUpdate(...args);
+    });
+  }
+}
+
+class Observer {
+  onUpdate(...args) {
+    // some logic
+  }
+}
+
+class Subjet {
+  constructor(listOfObservers) {
+    this.list = listOfObservers;
+  }
+
+  notify(...args) {
+    this.listOfObservers.update(...args)
+  }
+}
+
+class Mokaka extends Subjet {
+  sral() {
+    // ... sret
+    this.notify();
+  }
+}
+
+class Scinetist extends Observer {
+  onUpdate() {
+    console.log('Ebat posral');
+  }
+}
+
+const list = new ObserverList();
+
+list.add(new Scinetist());
+list.add(new Scinetist());
+list.add(new Scinetist());
+list.add(new Scinetist());
+list.add(new Scinetist());
+list.add(new Scinetist());
+list.add(new Scinetist());
+list.add(new Scinetist());
