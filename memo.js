@@ -22,11 +22,9 @@ function memo (fn) {
 
     if (cache.hasOwnProperty(key)) {
       value = cache[key];
-      console.log("memo");
     } else {
       value = fn.apply(this, args);
       cache[key] = value;
-      console.log("new");
     }
 
     return value;
